@@ -10,33 +10,37 @@ export class TaskService {
         private tasksRepository: Repository<Task>,
     ) {}
 
-    async addTask(name: string, userId: number, priority: number): Promise<Task> {
+    async addTask(
+        name: string,
+        userId: number,
+        priority: number,
+    ): Promise<Task> {
         try {
             const task = this.tasksRepository.create({
                 name,
                 userId,
                 priority,
             });
-            
+
             return this.tasksRepository.save(task);
         } catch (error) {
-            return error
+            return error;
         }
     }
 
     async getTaskByName(name: string): Promise<Task | undefined> {
         return this.tasksRepository.findOne({
-            where: { name }
+            where: { name },
         });
     }
 
     async getUserTasks(userId: number): Promise<Task[]> {
         return this.tasksRepository.find({
-            where: { userId }
+            where: { userId },
         });
     }
 
     async resetData(): Promise<void> {
-        await this.tasksRepository.query(`DELETE FROM task`);
+        await this.tasksRepository.clear();
     }
 }

@@ -3,6 +3,7 @@ import { ConfigurationModule } from '../configuration/configuration.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigurationService } from '../configuration/configuration.service';
 import { User } from '../../user/user.entity';
+import { Task } from '../../task/task.entity';
 
 @Module({
     imports: [
@@ -19,7 +20,7 @@ import { User } from '../../user/user.entity';
                 password: process.env.POSTGRES_PASSWORD,
                 synchronize: true,
                 autoLoadEntities: true,
-                entities: [User]
+                entities: [User,Task],
             }),
         }),
     ],

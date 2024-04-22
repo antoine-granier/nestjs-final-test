@@ -1,12 +1,21 @@
 import { UserService } from './../user/user.service';
-import { Controller, Get, Post, Param, Body, HttpStatus, HttpException, ParseIntPipe } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Param,
+    Body,
+    HttpStatus,
+    HttpException,
+    ParseIntPipe,
+} from '@nestjs/common';
 import { TaskService } from './task.service';
 
 @Controller()
 export class TaskController {
     constructor(
         private taskService: TaskService,
-        private userService: UserService
+        private userService: UserService,
     ) {}
 
     @Get('user/:userId')
@@ -23,21 +32,42 @@ export class TaskController {
     }
 
     @Post()
-    async addTask(@Body() taskData: { name: string; userId: number; priority: number }) {
-        
-        if (!taskData.name || !taskData.userId || isNaN(+taskData.userId) || +taskData.userId < 0|| isNaN(+taskData.priority) || +taskData.priority < 0) {
-            throw new HttpException('Invalid task data', HttpStatus.BAD_REQUEST);
+    async addTask(
+        @Body() taskData: { name: string; userId: number; priority: number },
+    ) {
+        if (
+            !taskData.name ||
+            !taskData.userId ||
+            isNaN(+taskData.userId) ||
+            +taskData.userId < 0 ||
+            !taskData.priority ||
+            isNaN(+taskData.priority) ||
+            +taskData.priority < 0
+        ) {
+            throw new HttpException(
+                'Invalid task data',
+                HttpStatus.BAD_REQUEST,
+            );
         }
-        
 
         const isExist = this.userService.getUserById(+taskData.userId);
-        if(!isExist){
-            throw new HttpException('Invalid task data', HttpStatus.BAD_REQUEST);
+        if (!isExist) {
+            throw new HttpException(
+                'Invalid task data',
+                HttpStatus.BAD_REQUEST,
+            );
         }
 
-        const task = await this.taskService.addTask(taskData.name, +taskData.userId, +taskData.priority);
+        const task = await this.taskService.addTask(
+            taskData.name,
+            +taskData.userId,
+            +taskData.priority,
+        );
         if (!task) {
-            throw new HttpException('Task could not be created', HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException(
+                'Task could not be created',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
         }
         return task;
     }

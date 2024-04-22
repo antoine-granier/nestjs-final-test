@@ -13,34 +13,34 @@ export class UserService {
     async addUser(email: string): Promise<User> {
         try {
             const user = this.usersRepository.create({
-                email: email
-            })
-            return await this.usersRepository.save(user)
-        } catch(err) {
+                email: email,
+            });
+            return await this.usersRepository.save(user);
+        } catch (err) {
             return err;
         }
     }
 
     async getUser(email: string): Promise<User> {
         const user = await this.usersRepository.findOneBy({
-            email: email
-        })
+            email: email,
+        });
         return user;
     }
 
     async getUserById(id: number): Promise<User> {
         const user = await this.usersRepository.findOneBy({
-            id: id
-        })
+            id: id,
+        });
         return user;
     }
 
     async getUsers(): Promise<User[]> {
-        const users = await this.usersRepository.find()
-        return users
+        const users = await this.usersRepository.find();
+        return users;
     }
 
     resetData(): Promise<void> {
-        return this.usersRepository.clear()
+        return this.usersRepository.clear();
     }
 }

@@ -24,7 +24,7 @@ export class TaskService {
 
             return this.tasksRepository.save(task);
         } catch (error) {
-            return error;
+            return null;
         }
     }
 

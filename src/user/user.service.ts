@@ -17,7 +17,7 @@ export class UserService {
             });
             return await this.usersRepository.save(user);
         } catch (err) {
-            return err;
+            return null;
         }
     }
 
@@ -36,8 +36,7 @@ export class UserService {
     }
 
     async getUsers(): Promise<User[]> {
-        const users = await this.usersRepository.find();
-        return users;
+        return await this.usersRepository.find();
     }
 
     resetData(): Promise<void> {

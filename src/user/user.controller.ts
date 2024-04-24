@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
+import { checkParams } from '../utils';
 
 @Controller()
 export class UserController {
@@ -16,18 +17,28 @@ export class UserController {
 
     @Get(':email')
     getUserByEmail(@Param('email') email: string) {
+        if (!checkParams(email, "email")) {
+            throw new HttpException('Invalid email', HttpStatus.BAD_REQUEST);
+        }
         return this.userService.getUser(email);
     }
 
     @Post()
     async addUser(@Body() user: { email: string }): Promise<User> {
-        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(user.email)) {
-            throw new HttpException('invalid email', HttpStatus.BAD_REQUEST);
+        if (!checkParams(user.email, "email")) {
+            throw new HttpException('Invalid email', HttpStatus.BAD_REQUEST);
         }
-        const allUsers = await this.userService.getUsers();
-        if (allUsers.find((u) => u.email === user.email)) {
-            throw new HttpException('user already exists', HttpStatus.CONFLICT);
+        const userExist = await this.userService.getUser(user.email);
+        if (userExist) {
+            throw new HttpException('User already exists', HttpStatus.CONFLICT);
         }
-        return await this.userService.addUser(user.email);
+        const createdUser = await this.userService.addUser(user.email);
+        if (!createdUser) {
+            throw new HttpException(
+                'User could not be created',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+        return createdUser;
     }
 }

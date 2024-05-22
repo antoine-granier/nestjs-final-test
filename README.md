@@ -2,6 +2,11 @@ Participants: DERENSY Dany, GRANIER Antoine
 
 - Lancer Docker au préalable.
 
+- Installer les node_modules:
+```code
+    npm ci
+```
+
 - Lancer le serveur:
     ```code
     npm run start
